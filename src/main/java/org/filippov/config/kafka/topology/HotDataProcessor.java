@@ -2,11 +2,8 @@ package org.filippov.config.kafka.topology;
 
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.*;
-import org.apache.kafka.streams.processor.StateStore;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.filippov.model.MonitorData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class AccidentProcessor {
+public class HotDataProcessor {
     private static final Serde<String> STRING_SERDE = Serdes.String();
     private static final Serde<Long> LONG_SERDE = Serdes.Long();
     private static final JsonSerde<Long> LONG_JSON_SERDE = new JsonSerde<>(Long.class);
@@ -69,20 +66,29 @@ public class AccidentProcessor {
 
         KStream<Long, MonitorData> inputStream = streamsBuilder.stream(inputTopicName, Consumed.with(LONG_SERDE, MONITOR_SERDE));
 
-        SlidingWindows hotDataWindow = SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(5), Duration.ofSeconds(10));
+        Duration windowSize = Duration.ofSeconds(30);
+        Duration advance = Duration.ofSeconds(10);
+        TimeWindows hotDataWindow = TimeWindows.ofSizeWithNoGrace(windowSize).advanceBy(advance);
+
+//        SlidingWindows hotDataWindow = SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(5), Duration.ofSeconds(10));
 
         TimeWindowedKStream<Long, MonitorData> hotData = inputStream.groupByKey().windowedBy(hotDataWindow);
 
 
 //        Materialized mat = Materialized.with(WindowedSerdes.timeWindowedSerdeFrom(Long.class), Serdes.ListSerde(ArrayList.class, MONITOR_SERDE));
 
-        KStream<Long, Integer> outputStream = hotData
+        KStream<Windowed<Long>, List<MonitorData>> batchedDataForChecks = hotData
                 .aggregate(
-                        () -> new ArrayList<MonitorData>(),
+                        () -> (List<MonitorData>) new ArrayList<MonitorData>(),
                         (windowKey, newValue, aggValue) -> {aggValue.add(newValue); return aggValue;},
                         Materialized.with(LONG_SERDE, Serdes.ListSerde(ArrayList.class, MONITOR_SERDE))
                 )
                 .toStream()
+                ;
+
+
+        // AccidentProbability calculating
+        KStream<Long, Integer> outputStream = batchedDataForChecks
                 .mapValues(this::detectAccidentProbability)
                 .selectKey((wk, v) -> wk.key());
 //        outputStream.to("output-topic");
@@ -91,7 +97,7 @@ public class AccidentProcessor {
     }
 
     public Integer detectAccidentProbability(List<MonitorData> data) {
-        return 10 + data.get(0).getMonitorId().intValue() * 1000 + data.size() * 10_000_000;
+        return Integer.parseInt(data.get(0).getFlags().toString());
     }
 
 }
