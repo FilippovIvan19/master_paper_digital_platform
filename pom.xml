@@ -11,25 +11,33 @@
     </parent>
 
     <groupId>org.filippov</groupId>
-    <artifactId>KafkaStreamsApp</artifactId>
+    <artifactId>monitor-data-processing</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <name>Kafka Streams Quickstart</name>
+    <name>monitor-data-processing</name>
+    <modules>
+        <module>mdp-api</module>
+        <module>mdp-impl</module>
+        <module>mdp-web</module>
+        <module>mdp-app</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kafka.version>3.6.0</kafka.version>
         <java.version>1.8</java.version>
         <java-target>1.8</java-target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
 
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
@@ -86,9 +94,6 @@
             <version>1.10.0</version>
         </dependency>
 
-
-
-
-
     </dependencies>
+
 </project>
