@@ -3,7 +3,6 @@ package org.filippov.impl.config.kafka;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -13,28 +12,24 @@ import java.util.Map;
 
 @Configuration
 public class KafkaTopicConfig {
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
-    @Value(value = "${monitor-data.topic.input}")
-    private String inputTopicName;
-    @Value(value = "${monitor-data.topic.output}")
-    private String outputTopicName;
+    @Autowired
+    private KafkaConfiguration kafkaConfiguration;
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfiguration.BOOTSTRAP_ADDRESS);
         return new KafkaAdmin(configs);
     }
 
     @Bean
     public NewTopic inTopic() {
-        return new NewTopic(inputTopicName, 1, (short) 1);
+        return new NewTopic(kafkaConfiguration.INPUT_TOPIC, 1, (short) 1);
     }
 
     @Bean
     public NewTopic outTopic() {
-        return new NewTopic(outputTopicName, 1, (short) 1);
+        return new NewTopic(kafkaConfiguration.OUTPUT_TOPIC, 1, (short) 1);
     }
 
 }

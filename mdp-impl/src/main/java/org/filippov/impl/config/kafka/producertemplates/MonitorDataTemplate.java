@@ -1,9 +1,9 @@
 package org.filippov.impl.config.kafka.producertemplates;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongSerializer;
 import org.filippov.api.model.MonitorData;
-import org.springframework.beans.factory.annotation.Value;
+import org.filippov.impl.config.kafka.KafkaConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -16,29 +16,27 @@ import java.util.Map;
 
 @Configuration
 public class MonitorDataTemplate {
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
-    @Value(value = "${monitor-data.topic.input}")
-    private String inputTopicName;
+    @Autowired
+    private KafkaConfiguration kafkaConfiguration;
 
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfiguration.BOOTSTRAP_ADDRESS);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
     }
 
     @Bean
-    public ProducerFactory<Long, MonitorData> producerFactory() {
+    public ProducerFactory<String, MonitorData> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<Long, MonitorData> kafkaTemplate() {
-        KafkaTemplate<Long, MonitorData> template = new KafkaTemplate<Long, MonitorData>(producerFactory());
-        template.setDefaultTopic(inputTopicName);
+    public KafkaTemplate<String, MonitorData> kafkaTemplate() {
+        KafkaTemplate<String, MonitorData> template = new KafkaTemplate<>(producerFactory());
+        template.setDefaultTopic(kafkaConfiguration.INPUT_TOPIC);
         return template;
     }
 }

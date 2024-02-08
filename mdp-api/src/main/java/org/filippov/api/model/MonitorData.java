@@ -17,7 +17,7 @@ import java.time.format.DateTimeParseException;
 public class MonitorData {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]"); // 2023-10-09 10:00:02.002
 
-    private Long monitorId;
+    private String monitorId;
     private LocalDateTime timestamp;
     private BigDecimal amount;
     @JsonDeserialize(using = FlagsDeserializer.class)
@@ -32,7 +32,7 @@ public class MonitorData {
 
     public MonitorData(CSVRecord record) throws DateTimeParseException {
         this(
-                Long.valueOf(record.get(Columns.MONITOR_ID)),
+                record.get(Columns.MONITOR_ID),
                 LocalDateTime.parse(record.get(Columns.TIMESTAMP), formatter),
                 new BigDecimal(record.get(Columns.AMOUNT)),
                 new SerializableRegularEnumSet<>(record.get(Columns.FLAGS), Flag.class)

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Qualifier("kafkaSender")
 public class KafkaSender implements DataSender {
     @Autowired
-    private KafkaTemplate<Long, MonitorData> monitorDataTemplate;
+    private KafkaTemplate<String, MonitorData> monitorDataTemplate;
 
     public void sendMonitorData(MonitorData data) {
         monitorDataTemplate.sendDefault(data.getMonitorId(), data);

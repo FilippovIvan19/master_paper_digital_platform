@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
 
 public class SerializableRegularEnumSet<E extends Enum<E>> {
+    @Getter
     private final EnumSet<E> enumSet;
     static private final Class<?> regularEnumSet;
     static private final Field elementsField;
