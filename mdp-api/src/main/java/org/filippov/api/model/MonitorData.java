@@ -1,5 +1,6 @@
 package org.filippov.api.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,9 @@ import java.time.format.DateTimeParseException;
 public class MonitorData {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]"); // 2023-10-09 10:00:02.002
 
+    @JsonProperty("monitor_id")
     private String monitorId;
-    private LocalDateTime timestamp;
+    private String timestamp;
     private BigDecimal amount;
     @JsonDeserialize(using = FlagsDeserializer.class)
     private SerializableRegularEnumSet<Flag> flags;
@@ -33,7 +35,7 @@ public class MonitorData {
     public MonitorData(CSVRecord record) throws DateTimeParseException {
         this(
                 record.get(Columns.MONITOR_ID),
-                LocalDateTime.parse(record.get(Columns.TIMESTAMP), formatter),
+                record.get(Columns.TIMESTAMP),
                 new BigDecimal(record.get(Columns.AMOUNT)),
                 new SerializableRegularEnumSet<>(record.get(Columns.FLAGS), Flag.class)
         );
