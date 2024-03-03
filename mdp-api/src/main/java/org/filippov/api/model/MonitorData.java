@@ -18,8 +18,12 @@ import java.time.format.DateTimeParseException;
 public class MonitorData {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]"); // 2023-10-09 10:00:02.002
 
+    public String getMonitorId() {
+        return monitor_id;
+    }
+
     @JsonProperty("monitor_id")
-    private String monitorId;
+    private String monitor_id;
     private String timestamp;
     private BigDecimal amount;
     @JsonDeserialize(using = FlagsDeserializer.class)
