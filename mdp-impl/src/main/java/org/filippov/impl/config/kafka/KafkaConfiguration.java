@@ -1,8 +1,6 @@
 package org.filippov.impl.config.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +20,6 @@ import java.util.Map;
 @EnableKafka
 @EnableKafkaStreams
 public class KafkaConfiguration {
-    private static final Serde<String> STRING_SERDE = Serdes.String();
-
     public final String BOOTSTRAP_ADDRESS;
     public final String INPUT_TOPIC;
     public final String OUTPUT_TOPIC;
@@ -47,41 +43,9 @@ public class KafkaConfiguration {
         props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, JsonSerde.class.getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class.getName());
-        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG,
-                 LogAndContinueExceptionHandler.class);
-//        LogAndFailExceptionHandler
+        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         KafkaStreamsConfiguration streamsConfig = new KafkaStreamsConfiguration(props);
         return streamsConfig;
     }
-
-//    @Bean
-//    StreamsBuilderFactoryBeanConfigurer uncaughtExceptionConfigurer(
-//            @Qualifier(KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_BUILDER_BEAN_NAME) StreamsBuilderFactoryBean factoryBean,
-//            ApplicationContext ctx) {
-//        return new StreamsBuilderFactoryBeanConfigurer(factoryBean, ctx);
-//    }
-//
-//    @AllArgsConstructor
-//    static class StreamsBuilderFactoryBeanConfigurer implements InitializingBean {
-//        private final StreamsBuilderFactoryBean factoryBean;
-//        private final ApplicationContext ctx;
-//
-//        @Override
-//        public void afterPropertiesSet() {
-//
-//            this.factoryBean.setUncaughtExceptionHandler(
-//                    (t, e) -> {
-//                        log.error("Uncaught exception in thread {}", t.getName(), e);
-//                        factoryBean.getKafkaStreams().close(Duration.ofSeconds(10));
-//                        log.info("Kafka streams closed.");
-//                    });
-//            this.factoryBean.setStateListener((newState, oldState) -> {
-//                if (newState == KafkaStreams.State.NOT_RUNNING) {
-//                    log.info("Now exiting the application.");
-//                    SpringApplication.exit(ctx, () -> 1);
-//                }
-//            });
-//        }
-//    }
 
 }

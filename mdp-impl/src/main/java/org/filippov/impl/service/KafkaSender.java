@@ -1,6 +1,6 @@
 package org.filippov.impl.service;
 
-import org.filippov.api.model.MonitorData;
+import org.filippov.api.model.MonitorData.MonitorDataDto;
 import org.filippov.api.service.DataSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 @Qualifier("kafkaSender")
 public class KafkaSender implements DataSender {
     @Autowired
-    private KafkaTemplate<String, MonitorData> monitorDataTemplate;
+    private KafkaTemplate<String, MonitorDataDto> monitorDataTemplate;
 
-    public void sendMonitorData(MonitorData data) {
+    public void sendMonitorData(MonitorDataDto data) {
         monitorDataTemplate.sendDefault(data.getMonitorId(), data);
     }
 }

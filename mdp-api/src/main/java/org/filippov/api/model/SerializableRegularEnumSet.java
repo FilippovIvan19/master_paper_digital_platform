@@ -12,7 +12,7 @@ import java.util.EnumSet;
 
 public class SerializableRegularEnumSet<E extends Enum<E>> {
     @Getter
-    private final EnumSet<E> enumSet;
+    protected final EnumSet<E> enumSet;
     static private final Class<?> regularEnumSet;
     static private final Field elementsField;
 
@@ -52,7 +52,7 @@ public class SerializableRegularEnumSet<E extends Enum<E>> {
 
 
     public static abstract class Deserializer<T extends Enum<T>> extends StdDeserializer<SerializableRegularEnumSet<T>> {
-        public Deserializer() {
+        protected Deserializer() {
             this(null);
         }
 
@@ -60,7 +60,7 @@ public class SerializableRegularEnumSet<E extends Enum<E>> {
             super(vc);
         }
 
-        abstract public Class<T> getElementType();
+        abstract protected Class<T> getElementType();
 
         @Override
         public SerializableRegularEnumSet<T> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
@@ -68,4 +68,13 @@ public class SerializableRegularEnumSet<E extends Enum<E>> {
             return new SerializableRegularEnumSet<>(elements, getElementType());
         }
     }
+
+
+    // example
+//    public static class FlagsDeserializer extends SerializableRegularEnumSet.Deserializer<MonitorData.Flag> {
+//        @Override
+//        protected Class<MonitorData.Flag> getElementType() {
+//            return MonitorData.Flag.class;
+//        }
+//    }
 }

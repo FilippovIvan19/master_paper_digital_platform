@@ -24,8 +24,7 @@ public class SparkConfiguration {
                 .set("spark.sql.hive.metastore.version", "3.1.3")
                 .set("spark.sql.hive.metastore.jars", "path")
                 .set("spark.sql.hive.metastore.jars.path", "file:///home/ivan/bigdata/hive/apache-hive-3.1.3-bin/lib/*")
-                .set("hive.exec.dynamic.partition.mode", "nonstrict") // todo test
-//                .config("spark.hadoop.hive.exec.dynamic.partition.mode", "nonstrict") todo test
+                .set("hive.exec.dynamic.partition.mode", "nonstrict")
                 ;
         return sparkConf;
     }

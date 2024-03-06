@@ -2,6 +2,7 @@ package org.filippov.impl.service.dataanalysis;
 
 import org.apache.kafka.common.serialization.Serde;
 import org.filippov.api.model.MonitorData;
+import org.filippov.api.model.MonitorData.Flag;
 import org.filippov.api.service.dataanalysis.DataAnalyser;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,9 @@ public class HotDataAnalyser implements DataAnalyser<HotDataAnalyticsDto> {
         HotDataAnalyticsDto analytics = new HotDataAnalyticsDto();
         analytics.setMonitorId(data.get(0).getMonitorId());
         analytics.setIncident(checkIncident(data));
-        analytics.setIntervention(containsFlag(data, MonitorData.Flag.INTERVENTION_WARNING) || checkIntervention(data));
-        analytics.setCrash(containsFlag(data, MonitorData.Flag.CRASH_WARNING));
-        analytics.setLowButtery(containsFlag(data, MonitorData.Flag.LOW_BATTERY));
+        analytics.setIntervention(containsFlag(data, Flag.INTERVENTION_WARNING) || checkIntervention(data));
+        analytics.setCrash(containsFlag(data, Flag.CRASH_WARNING));
+        analytics.setLowButtery(containsFlag(data, Flag.LOW_BATTERY));
         return analytics;
     }
 
@@ -33,7 +34,7 @@ public class HotDataAnalyser implements DataAnalyser<HotDataAnalyticsDto> {
         return HotDataAnalyticsDto.class;
     }
 
-    private boolean containsFlag(List<MonitorData> data, MonitorData.Flag flag) {
+    private boolean containsFlag(List<MonitorData> data, Flag flag) {
         return data.stream().anyMatch(d -> d.getFlags().getEnumSet().contains(flag));
     }
 

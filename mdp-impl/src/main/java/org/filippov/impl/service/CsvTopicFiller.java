@@ -2,7 +2,7 @@ package org.filippov.impl.service;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.filippov.api.model.MonitorData;
+import org.filippov.api.model.MonitorData.MonitorDataDto;
 import org.filippov.api.service.DataSender;
 import org.filippov.api.service.FileTopicFiller;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class CsvTopicFiller implements FileTopicFiller {
                     .build()
                     .parse(in);
             for (CSVRecord record: records) {
-                sender.sendMonitorData(new MonitorData(record));
+                sender.sendMonitorData(new MonitorDataDto(record));
             }
         } catch (IOException | DateTimeParseException e) {
             e.printStackTrace();

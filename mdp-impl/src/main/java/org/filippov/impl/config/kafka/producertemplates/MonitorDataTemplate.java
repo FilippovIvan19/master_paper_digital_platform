@@ -2,7 +2,7 @@ package org.filippov.impl.config.kafka.producertemplates;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.filippov.api.model.MonitorData;
+import org.filippov.api.model.MonitorData.MonitorDataDto;
 import org.filippov.impl.config.kafka.KafkaConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,13 +30,13 @@ public class MonitorDataTemplate {
     }
 
     @Bean
-    public ProducerFactory<String, MonitorData> producerFactory() {
+    public ProducerFactory<String, MonitorDataDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, MonitorData> kafkaTemplate() {
-        KafkaTemplate<String, MonitorData> template = new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, MonitorDataDto> kafkaTemplate() {
+        KafkaTemplate<String, MonitorDataDto> template = new KafkaTemplate<>(producerFactory());
         template.setDefaultTopic(kafkaConfiguration.INPUT_TOPIC);
         return template;
     }

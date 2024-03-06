@@ -1,7 +1,5 @@
 package org.filippov.api.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,16 +16,50 @@ import java.time.format.DateTimeParseException;
 public class MonitorData {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]"); // 2023-10-09 10:00:02.002
 
-    public String getMonitorId() {
-        return monitor_id;
+    private String monitorId;
+    private LocalDateTime timestamp;
+    private BigDecimal amount;
+    private SerializableRegularEnumSet<Flag> flags;
+
+
+    public MonitorData(MonitorDataDto dto) {
+        this(
+                dto.getMonitorId(),
+                LocalDateTime.parse(dto.getTimestamp(), formatter),
+                dto.getAmount(),
+                new SerializableRegularEnumSet<>(dto.getFlags(), Flag.class)
+        );
     }
 
-    @JsonProperty("monitor_id")
-    private String monitor_id;
-    private String timestamp;
-    private BigDecimal amount;
-    @JsonDeserialize(using = FlagsDeserializer.class)
-    private SerializableRegularEnumSet<Flag> flags;
+    public MonitorDataDto toDto() {
+        return new MonitorDataDto(
+                monitorId,
+                timestamp.format(formatter),
+                amount,
+                flags.toString()
+        );
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MonitorDataDto {
+        private String monitorId;
+        private String timestamp;
+        private BigDecimal amount;
+        private String flags;
+
+        public MonitorDataDto(CSVRecord record) throws DateTimeParseException {
+            this(
+                    record.get(Columns.MONITOR_ID),
+                    record.get(Columns.TIMESTAMP),
+                    new BigDecimal(record.get(Columns.AMOUNT)),
+                    record.get(Columns.FLAGS)
+            );
+        }
+    }
+
 
     public interface Columns {
         String MONITOR_ID = "monitorId";
@@ -36,26 +68,9 @@ public class MonitorData {
         String FLAGS = "flags";
     }
 
-    public MonitorData(CSVRecord record) throws DateTimeParseException {
-        this(
-                record.get(Columns.MONITOR_ID),
-                record.get(Columns.TIMESTAMP),
-                new BigDecimal(record.get(Columns.AMOUNT)),
-                new SerializableRegularEnumSet<>(record.get(Columns.FLAGS), Flag.class)
-        );
-    }
-
     public enum Flag {
         INTERVENTION_WARNING,
         CRASH_WARNING,
         LOW_BATTERY,
     }
-
-    public static class FlagsDeserializer extends SerializableRegularEnumSet.Deserializer<Flag> {
-        @Override
-        public Class<Flag> getElementType() {
-            return Flag.class;
-        }
-    }
-
 }
