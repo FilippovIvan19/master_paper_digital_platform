@@ -15,7 +15,7 @@ public class BillingEndPoint {
     private BillingService billingService;
 
     @ResponseBody
-    @GetMapping(value = "monthAmount")
+    @GetMapping("monthAmount")
     public BigDecimal fillTopicFromScv(@RequestParam String monitorId,
                                        @RequestParam Integer year,
                                        @RequestParam Integer month) {
