@@ -21,4 +21,10 @@ public class BillingEndPoint {
                                        @RequestParam Integer month) {
         return billingService.getResourceAmountForMonth(monitorId, year, month);
     }
+
+    @ResponseBody
+    @GetMapping("monthInvoice")
+    public void sendMonthInvoice(@RequestParam String monitorId) {
+        billingService.sendMonthInvoice(monitorId);
+    }
 }

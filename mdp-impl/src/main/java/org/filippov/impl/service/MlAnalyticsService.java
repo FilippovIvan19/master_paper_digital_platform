@@ -48,13 +48,13 @@ public class MlAnalyticsService implements AnalyticsService {
             return predictionRecord.getPredictedDevices();
         }
 
-//        for debug
-        spark.table("SmartMonitoring.MonitoringData")
-                .where(col(Columns.MONITOR_ID).equalTo(monitorId)
-                        .and(year(col(Columns.TIMESTAMP)).equalTo(year))
-                        .and(month(col(Columns.TIMESTAMP)).equalTo(month))
-                )
-                .show();
+////        for debug
+//        spark.table("SmartMonitoring.MonitoringData")
+//                .where(col(Columns.MONITOR_ID).equalTo(monitorId)
+//                        .and(year(col(Columns.TIMESTAMP)).equalTo(year))
+//                        .and(month(col(Columns.TIMESTAMP)).equalTo(month))
+//                )
+//                .show();
 
         List<MonitorDataDto> data = spark.table("SmartMonitoring.MonitoringData")
                 .where(col(Columns.MONITOR_ID).equalTo(monitorId)
