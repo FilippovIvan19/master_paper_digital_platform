@@ -1,6 +1,6 @@
 package org.filippov.api.service;
 
-import org.filippov.api.model.PredictedDevice;
+import org.filippov.api.model.dbentities.PredictedDevice;
 
 import java.util.List;
 

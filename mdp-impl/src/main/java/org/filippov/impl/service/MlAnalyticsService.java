@@ -5,9 +5,11 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.SparkSession;
 import org.filippov.api.model.MonitorData.Columns;
 import org.filippov.api.model.MonitorData.MonitorDataDto;
-import org.filippov.api.model.PredictedDevice;
 import org.filippov.api.model.TimeSeries;
+import org.filippov.api.model.dbentities.DevicePredictionRecord;
+import org.filippov.api.model.dbentities.PredictedDevice;
 import org.filippov.api.service.AnalyticsService;
+import org.filippov.impl.repository.DevicePredictionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,19 +28,25 @@ public class MlAnalyticsService implements AnalyticsService {
     @Autowired
     private SparkSession spark;
 
+    @Autowired
+    private DevicePredictionRepository devicePredictionRepository;
+
     private final WebClient webClient = WebClient.create();
 
-    @Value("${NilmAnalyticsMlAppServerUrl}") // todo rename
+    @Value("${nilm-analytics.ml-app.server.url}")
     private String NilmServerUrl;
 
-    ParameterizedTypeReference<List<PredictedDevice>> predictedDeviceListType = new ParameterizedTypeReference<List<PredictedDevice>>() {};
+    private final ParameterizedTypeReference<List<PredictedDevice>> predictedDeviceListType =
+            new ParameterizedTypeReference<List<PredictedDevice>>() {};
+    private final Encoder<MonitorDataDto> dtoEncoder = Encoders.bean(MonitorDataDto.class);
 
 
     @Override
     public List<PredictedDevice> identifyDevicesForMonth(String monitorId, Integer year, Integer month) {
-
-        Encoder<MonitorDataDto> dtoEncoder = Encoders.bean(MonitorDataDto.class);
-
+        DevicePredictionRecord predictionRecord = devicePredictionRepository.findByMonitorIdAndYearAndMonth(monitorId, year, month);
+        if (predictionRecord != null) {
+            return predictionRecord.getPredictedDevices();
+        }
 
 //        for debug
         spark.table("SmartMonitoring.MonitoringData")
@@ -68,6 +76,11 @@ public class MlAnalyticsService implements AnalyticsService {
                 .bodyToMono(predictedDeviceListType)
                 .block();
 
+        predictionRecord = new DevicePredictionRecord(null, monitorId, year, month, result);
+        for (PredictedDevice device : result) {
+            device.setPredictionRecord(predictionRecord);
+        }
+        devicePredictionRepository.save(predictionRecord);
         return result;
     }
 }

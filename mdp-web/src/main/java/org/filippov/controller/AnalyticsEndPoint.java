@@ -1,7 +1,7 @@
 package org.filippov.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.filippov.api.model.PredictedDevice;
+import org.filippov.api.model.dbentities.PredictedDevice;
 import org.filippov.api.service.AnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
