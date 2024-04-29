@@ -17,9 +17,9 @@ public class AnalyticsEndPoint {
 
     @ResponseBody
     @GetMapping("identifyDevices")
-    public List<PredictedDevice> fillTopicFromScv(@RequestParam String monitorId,
-                                                  @RequestParam Integer year,
-                                                  @RequestParam Integer month) {
+    public List<PredictedDevice> identifyDevicesForMonth(@RequestParam String monitorId,
+                                                         @RequestParam Integer year,
+                                                         @RequestParam Integer month) {
         return analyticsService.identifyDevicesForMonth(monitorId, year, month);
     }
 }

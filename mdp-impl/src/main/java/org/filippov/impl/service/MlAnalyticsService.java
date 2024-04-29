@@ -56,6 +56,7 @@ public class MlAnalyticsService implements AnalyticsService {
 //                )
 //                .show();
 
+        // move to SparkRepository
         List<MonitorDataDto> data = spark.table("SmartMonitoring.MonitoringData")
                 .where(col(Columns.MONITOR_ID).equalTo(monitorId)
                         .and(year(col(Columns.TIMESTAMP)).equalTo(year))

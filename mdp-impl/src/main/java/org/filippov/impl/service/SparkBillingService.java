@@ -49,6 +49,7 @@ public class SparkBillingService implements BillingService {
 //                )
 //                .show();
 
+        // move to SparkRepository
         BigDecimal amount = spark.table("SmartMonitoring.MonitoringData")
                 .where(col(Columns.MONITOR_ID).equalTo(monitorId)
                         .and(year(col(Columns.TIMESTAMP)).equalTo(year))

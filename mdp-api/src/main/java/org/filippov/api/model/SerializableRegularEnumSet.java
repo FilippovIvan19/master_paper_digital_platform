@@ -37,6 +37,7 @@ public class SerializableRegularEnumSet<E extends Enum<E>> {
         }
     }
 
+    // unit tests should be added to test this class for sure
     public SerializableRegularEnumSet(String elements, Class<E> elementType) {
         try {
             if (elements.length() > 64) {
