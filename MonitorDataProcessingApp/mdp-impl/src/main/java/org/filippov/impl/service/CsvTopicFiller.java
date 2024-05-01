@@ -22,7 +22,7 @@ public class CsvTopicFiller implements FileTopicFiller {
 
     public void fillInputTopic(String sourceFilePath) {
         if (sourceFilePath == null) {
-            sourceFilePath = "collectedData/collectedData.csv";
+            sourceFilePath = "MonitorDataProcessingApp/collectedData/collectedData.csv";
         }
         try (Reader in = new FileReader(sourceFilePath)) {
             Iterable<CSVRecord> records = CSVFormat.DEFAULT.builder()
