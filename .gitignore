@@ -33,3 +33,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+
+/hadoop/
+/hive/
+/docker/
+/kafka/
+/spark/
