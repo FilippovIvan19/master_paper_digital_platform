@@ -1,0 +1,19 @@
+# file /etc/environment
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+SPARK_HOME=/home/ivan/bigdata/spark/spark-3.5.0-bin-hadoop3
+DERBY_HOME=/home/ivan/bigdata/hive/db-derby-10.14.1.0-bin
+HADOOP_HOME=/home/ivan/bigdata/hadoop/hadoop-3.3.6
+HIVE_HOME=/home/ivan/bigdata/hive/apache-hive-3.1.3-bin
+KAFKA_HOME=/home/ivan/bigdata/kafka/kafka_2.13-3.6.0
+
+
+# file /etc/profile.d/update_path.sh
+PATH="$PATH:$JAVA_HOME/bin"
+PATH="$PATH:$SPARK_HOME/bin"
+PATH="$PATH:$SPARK_HOME/sbin"
+PATH="$PATH:$DERBY_HOME/bin"
+PATH="$PATH:$HADOOP_HOME/bin"
+PATH="$PATH:$HIVE_HOME/bin"
+PATH="$PATH:$KAFKA_HOME/bin"

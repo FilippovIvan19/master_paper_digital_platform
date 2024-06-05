@@ -1,0 +1,18 @@
+.
+├── hadoop
+│   └── hadoop-3.3.6
+├── hive
+│   ├── apache-hive-3.1.3-bin
+│   └── db-derby-10.14.1.0-bin
+├── kafka
+│   └── kafka_2.13-3.6.0
+├── MonitorDataProcessingApp
+│   ├── mdp-api
+│   ├── mdp-app
+│   ├── mdp-impl
+│   └── mdp-web
+├── NilmAnalyticsMlApp
+└── spark
+    └── spark-3.5.0-bin-hadoop3
+
+directories hive and hadoop contains necessary config files
